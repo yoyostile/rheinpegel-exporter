@@ -11,7 +11,7 @@ WORKDIR $GOPATH/src/mypackage/myapp/
 #get dependancies
 RUN go get -d -v
 #build the binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/darksky-exporter
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/rheinpegel-exporter
 
 
 # STEP 2 build a small image
@@ -20,10 +20,10 @@ FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /etc/passwd /etc/passwd
 # Copy our static executable
-COPY --from=builder /go/bin/darksky-exporter /go/bin/darksky-exporter
+COPY --from=builder /go/bin/rheinpegel-exporter /go/bin/rheinpegel-exporter
 
 EXPOSE 8086
 USER appuser
-ENTRYPOINT ["/go/bin/darksky-exporter", "-listen-address", ":8086"]
+ENTRYPOINT ["/go/bin/rheinpegel-exporter", "-listen-address", ":8086"]
 
 
