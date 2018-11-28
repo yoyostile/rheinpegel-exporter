@@ -1,12 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
-	"encoding/json"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/robfig/cron"
@@ -35,26 +35,26 @@ var (
 )
 
 type CurrentMeasurement struct {
-	Timestamp 		time.Time
-	Value     		float64
-	Trend     		float64
-	StateMnwMhw 	string
-	StateNswHsw 	string
+	Timestamp   time.Time
+	Value       float64
+	Trend       float64
+	StateMnwMhw string
+	StateNswHsw string
 }
 
 type GaugeZero struct {
-	Unit 				string
-	Value 			float64
-	ValidFrom 	time.Time
+	Unit      string
+	Value     float64
+	ValidFrom time.Time
 }
 
 type Measurement struct {
-	Shortname 					string
-	Longname 						string
-	Unit 								string
-	Equidistance 				string
-	CurrentMeasurement 	CurrentMeasurement
-	GaugeZero 					GaugeZero
+	Shortname          string
+	Longname           string
+	Unit               string
+	Equidistance       string
+	CurrentMeasurement CurrentMeasurement
+	GaugeZero          GaugeZero
 }
 
 func init() {
@@ -65,14 +65,14 @@ func init() {
 func getMeasurement(location string, target interface{}) error {
 	var url = fmt.Sprintf("https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/%s/W.json?includeCurrentMeasurement=true", location)
 
-  r, err := myClient.Get(url)
-  if err != nil {
+	r, err := myClient.Get(url)
+	if err != nil {
 		log.Println(err)
-    return err
-  }
-  defer r.Body.Close()
+		return err
+	}
+	defer r.Body.Close()
 
-  return json.NewDecoder(r.Body).Decode(target)
+	return json.NewDecoder(r.Body).Decode(target)
 }
 
 func collectSample() {
