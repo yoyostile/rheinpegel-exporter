@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/robfig/cron"
 )
 
@@ -86,7 +87,7 @@ func collectSample() {
 
 func main() {
 	flag.Parse()
-	http.Handle("/metrics", prometheus.Handler())
+	http.Handle("/metrics", promhttp.Handler())
 
 	collectSample()
 	c := cron.New()
